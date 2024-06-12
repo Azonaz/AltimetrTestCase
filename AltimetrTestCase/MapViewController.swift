@@ -45,6 +45,11 @@ class MapViewController: UIViewController, CLLocationManagerDelegate {
         return button
     }()
 
+    private lazy var gpsIndicatorView: GPSIndicatorView = {
+        let view = GPSIndicatorView()
+        return view
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .clear
@@ -56,7 +61,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate {
     }
 
     private func setupViews() {
-        [mapView, compassButton, mapTypeButton, locationButton].forEach {
+        [mapView, compassButton, gpsIndicatorView, mapTypeButton, locationButton].forEach {
             view.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
@@ -69,6 +74,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate {
             compassButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
             compassButton.widthAnchor.constraint(equalToConstant: 50),
             compassButton.heightAnchor.constraint(equalToConstant: 50),
+            gpsIndicatorView.topAnchor.constraint(equalTo: compassButton.topAnchor),
+            gpsIndicatorView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            gpsIndicatorView.widthAnchor.constraint(equalToConstant: 60),
+            gpsIndicatorView.heightAnchor.constraint(equalToConstant: 30),
             mapTypeButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -200),
             mapTypeButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
             mapTypeButton.widthAnchor.constraint(equalToConstant: 50),
