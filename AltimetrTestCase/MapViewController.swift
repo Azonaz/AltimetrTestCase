@@ -4,10 +4,12 @@ import CoreLocation
 
 class MapViewController: UIViewController, CLLocationManagerDelegate {
     private let locationManager = CLLocationManager()
+    private var isLocationUpdating = true
 
     private lazy var mapView: MKMapView = {
         let map = MKMapView()
         map.setUserTrackingMode(.followWithHeading, animated: true)
+        map.showsCompass = false
         return map
     }()
 
@@ -22,23 +24,39 @@ class MapViewController: UIViewController, CLLocationManagerDelegate {
     }()
 
     private lazy var locationButton: UIButton = {
-            let button = UIButton()
-            let image = UIImage(systemName: "dot.scope")?.withTintColor(.white, renderingMode: .alwaysOriginal)
-            button.setImage(image, for: .normal)
-            button.backgroundColor = .labelBack
-            button.layer.cornerRadius = 20
-            button.addTarget(self, action: #selector(centerToUserLocation), for: .touchUpInside)
-            return button
-        }()
+        let button = UIButton()
+        let image = UIImage(systemName: "dot.scope")?.withTintColor(.white, renderingMode: .alwaysOriginal)
+        button.setImage(image, for: .normal)
+        button.backgroundColor = .labelBack
+        button.layer.cornerRadius = 20
+        button.addTarget(self, action: #selector(centerToUserLocation), for: .touchUpInside)
+        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
+        button.addGestureRecognizer(longPressRecognizer)
+        return button
+    }()
+
+    private lazy var compassButton: UIButton = {
+        let button = UIButton()
+        let image = UIImage(systemName: "safari")?.withTintColor(.white, renderingMode: .alwaysOriginal)
+        button.setImage(image, for: .normal)
+        button.backgroundColor = .labelBack
+        button.layer.cornerRadius = 20
+        button.addTarget(self, action: #selector(showCompassViewController), for: .touchUpInside)
+        return button
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .clear
+        navigationController?.isNavigationBarHidden = true
         setupViews()
+        locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
     }
 
     private func setupViews() {
-        [mapView, mapTypeButton, locationButton].forEach {
+        [mapView, compassButton, mapTypeButton, locationButton].forEach {
             view.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
@@ -47,6 +65,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate {
             mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             mapView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             mapView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            compassButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 70),
+            compassButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            compassButton.widthAnchor.constraint(equalToConstant: 50),
+            compassButton.heightAnchor.constraint(equalToConstant: 50),
             mapTypeButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -200),
             mapTypeButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
             mapTypeButton.widthAnchor.constraint(equalToConstant: 50),
@@ -69,5 +91,51 @@ class MapViewController: UIViewController, CLLocationManagerDelegate {
 
     @objc
     private func centerToUserLocation() {
+        guard let userLocation = locationManager.location?.coordinate else {
+            print("User location is not available.")
+            return
+        }
+        let region = MKCoordinateRegion(center: userLocation, latitudinalMeters: 1000, longitudinalMeters: 1000)
+        mapView.setRegion(region, animated: true)
+    }
+
+    @objc
+    private func handleLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
+        if gestureRecognizer.state == .began {
+            if isLocationUpdating {
+                locationManager.stopUpdatingLocation()
+                isLocationUpdating = false
+                print("Location updates stopped.")
+            } else {
+                locationManager.startUpdatingLocation()
+                isLocationUpdating = true
+                print("Location updates started.")
+            }
+        }
+    }
+
+    @objc
+    private func showCompassViewController() {
+        let compassViewController = CompassViewController()
+        navigationController?.pushViewController(compassViewController, animated: true)
+    }
+
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("Location manager failed with error: \(error.localizedDescription)")
+    }
+
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        switch manager.authorizationStatus {
+        case .notDetermined:
+            print("Location access not determined.")
+        case .restricted, .denied:
+            print("Location access restricted or denied.")
+        case .authorizedWhenInUse, .authorizedAlways:
+            locationManager.startUpdatingLocation()
+            isLocationUpdating = true
+            print("Location updates started.")
+        @unknown default:
+            fatalError("Unknown authorization status.")
+        }
     }
 }
