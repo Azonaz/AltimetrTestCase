@@ -320,6 +320,8 @@
 				DEVELOPMENT_TEAM = H2L9U6M2SX;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AltimetrTestCase/Info.plist;
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "We need your location to show your position on the map.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to show your position on the map.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIStatusBarStyle = "";
@@ -352,6 +354,8 @@
 				DEVELOPMENT_TEAM = H2L9U6M2SX;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AltimetrTestCase/Info.plist;
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "We need your location to show your position on the map.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to show your position on the map.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIStatusBarStyle = "";

@@ -2,7 +2,7 @@ import UIKit
 import MapKit
 import CoreLocation
 
-class MapViewController: UIViewController, CLLocationManagerDelegate {
+class MapViewController: UIViewController {
     private let locationManager = CLLocationManager()
     private var isLocationUpdating = true
 
@@ -60,6 +60,42 @@ class MapViewController: UIViewController, CLLocationManagerDelegate {
         locationManager.startUpdatingLocation()
     }
 
+    private func updateLocationButtonAppearance() {
+        locationButton.backgroundColor = isLocationUpdating ? .labelBack : .black
+    }
+
+    @objc
+    private func toggleMapType() {
+        mapView.mapType = mapView.mapType == .standard ? .hybrid : .standard
+    }
+
+    @objc
+    private func centerToUserLocation() {
+        guard let userLocation = locationManager.location?.coordinate else { return }
+        let region = MKCoordinateRegion(center: userLocation, latitudinalMeters: 1000, longitudinalMeters: 1000)
+        mapView.setRegion(region, animated: true)
+    }
+
+    @objc
+    private func handleLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
+        guard gestureRecognizer.state == .began else { return }
+        isLocationUpdating.toggle()
+        updateLocationButtonAppearance()
+        if isLocationUpdating {
+            locationManager.startUpdatingLocation()
+        } else {
+            locationManager.stopUpdatingLocation()
+        }
+    }
+
+    @objc
+    private func showCompassViewController() {
+        let compassViewController = CompassViewController()
+        navigationController?.pushViewController(compassViewController, animated: true)
+    }
+}
+
+extension MapViewController {
     private func setupViews() {
         [mapView, compassButton, gpsIndicatorView, mapTypeButton, locationButton].forEach {
             view.addSubview($0)
@@ -88,49 +124,11 @@ class MapViewController: UIViewController, CLLocationManagerDelegate {
             locationButton.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
+}
 
-    @objc
-    private func toggleMapType() {
-        if mapView.mapType == .standard {
-            mapView.mapType = .hybrid
-        } else {
-            mapView.mapType = .standard
-        }
-    }
-
-    @objc
-    private func centerToUserLocation() {
-        guard let userLocation = locationManager.location?.coordinate else {
-            print("User location is not available.")
-            return
-        }
-        let region = MKCoordinateRegion(center: userLocation, latitudinalMeters: 1000, longitudinalMeters: 1000)
-        mapView.setRegion(region, animated: true)
-    }
-
-    @objc
-    private func handleLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
-        if gestureRecognizer.state == .began {
-            if isLocationUpdating {
-                locationManager.stopUpdatingLocation()
-                isLocationUpdating = false
-                print("Location updates stopped.")
-            } else {
-                locationManager.startUpdatingLocation()
-                isLocationUpdating = true
-                print("Location updates started.")
-            }
-        }
-    }
-
-    @objc
-    private func showCompassViewController() {
-        let compassViewController = CompassViewController()
-        navigationController?.pushViewController(compassViewController, animated: true)
-    }
-
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("Location manager failed with error: \(error.localizedDescription)")
+extension MapViewController: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        showGPSSignal(locations)
     }
 
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
@@ -145,6 +143,26 @@ class MapViewController: UIViewController, CLLocationManagerDelegate {
             print("Location updates started.")
         @unknown default:
             fatalError("Unknown authorization status.")
+        }
+    }
+
+    private func showGPSSignal(_ locations: [CLLocation]) {
+        guard let location = locations.last else { return }
+        let quality = calculateGPSQuality(from: location.horizontalAccuracy)
+        gpsIndicatorView.updateGPSLevel(quality)
+    }
+
+    private func calculateGPSQuality(from accuracy: CLLocationAccuracy) -> GPSLevel {
+        let quality = (100 - accuracy) / 100
+        switch quality {
+        case 0.9...:
+            return .high
+        case 0.6..<0.9:
+            return .medium
+        case 0.3..<0.6:
+            return .low
+        default:
+            return .none
         }
     }
 }

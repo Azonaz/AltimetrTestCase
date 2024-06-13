@@ -8,6 +8,7 @@ enum GPSLevel {
 }
 
 class GPSIndicatorView: UIView {
+    private var sticks: [UIView] = []
 
     init() {
         super.init(frame: .zero)
@@ -21,10 +22,11 @@ class GPSIndicatorView: UIView {
     private func setupViews() {
         backgroundColor = UIColor.labelBack
         layer.cornerRadius = 5
+
         let label = UILabel()
         label.text = "GPS"
         label.textColor = .white
-        label.font = UIFont.systemFont(ofSize: 15, weight: .bold)
+        label.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
         addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -32,37 +34,45 @@ class GPSIndicatorView: UIView {
             label.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])
 
+        let stick3 = createStick(height: 13)
+        let stick2 = createStick(height: 9)
+        let stick1 = createStick(height: 5)
+        sticks = [stick1, stick2, stick3]
+
+        NSLayoutConstraint.activate([
+            stick3.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -4),
+            stick3.centerYAnchor.constraint(equalTo: centerYAnchor),
+            stick2.trailingAnchor.constraint(equalTo: stick3.leadingAnchor, constant: -3),
+            stick2.bottomAnchor.constraint(equalTo: stick3.bottomAnchor),
+            stick1.trailingAnchor.constraint(equalTo: stick2.leadingAnchor, constant: -3),
+            stick1.bottomAnchor.constraint(equalTo: stick3.bottomAnchor)
+        ])
+    }
+
+    private func createStick(height: CGFloat) -> UIView {
         let stick = UIView()
         stick.backgroundColor = .white
         addSubview(stick)
         stick.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             stick.widthAnchor.constraint(equalToConstant: 3),
-            stick.heightAnchor.constraint(equalToConstant: 5),
-            stick.leadingAnchor.constraint(equalTo: label.trailingAnchor, constant: 5),
-            stick.bottomAnchor.constraint(equalTo: label.bottomAnchor)
+            stick.heightAnchor.constraint(equalToConstant: height)
         ])
+        return stick
+    }
 
-        let stick2 = UIView()
-        stick2.backgroundColor = .white
-        addSubview(stick2)
-        stick2.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            stick2.widthAnchor.constraint(equalToConstant: 3),
-            stick2.heightAnchor.constraint(equalToConstant: 10),
-            stick2.leadingAnchor.constraint(equalTo: stick.trailingAnchor, constant: 3),
-            stick2.bottomAnchor.constraint(equalTo: label.bottomAnchor)
-        ])
-
-        let stick3 = UIView()
-        stick3.backgroundColor = .white
-        addSubview(stick3)
-        stick3.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            stick3.widthAnchor.constraint(equalToConstant: 3),
-            stick3.heightAnchor.constraint(equalToConstant: 15),
-            stick3.leadingAnchor.constraint(equalTo: stick2.trailingAnchor, constant: 3),
-            stick3.bottomAnchor.constraint(equalTo: label.bottomAnchor)
-        ])
+    func updateGPSLevel(_ level: GPSLevel) {
+        for (index, stick) in sticks.enumerated() {
+            switch level {
+            case .none:
+                stick.backgroundColor = .white
+            case .low:
+                stick.backgroundColor = index == 0 ? .orange : .white
+            case .medium:
+                stick.backgroundColor = index <= 1 ? .orange : .white
+            case .high:
+                stick.backgroundColor = .orange
+            }
+        }
     }
 }
