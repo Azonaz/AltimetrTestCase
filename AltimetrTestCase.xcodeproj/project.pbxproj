@@ -12,6 +12,11 @@
 		8424895E2C173BC30060FE60 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8424895D2C173BC30060FE60 /* MapViewController.swift */; };
 		842489632C173BC40060FE60 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 842489622C173BC40060FE60 /* Assets.xcassets */; };
 		842489662C173BC40060FE60 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 842489652C173BC40060FE60 /* Base */; };
+		8487CF8D2C1AFD6300F4C8AD /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8487CF8C2C1AFD6300F4C8AD /* ShareViewController.swift */; };
+		8487CF8F2C1AFDC200F4C8AD /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8487CF8E2C1AFDC200F4C8AD /* SettingsViewController.swift */; };
+		8487CF932C1B22AF00F4C8AD /* UIImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8487CF922C1B22AF00F4C8AD /* UIImage+Extensions.swift */; };
+		8487CF952C1B249900F4C8AD /* Array+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8487CF942C1B249800F4C8AD /* Array+Extensions.swift */; };
+		8487CF972C1B24C600F4C8AD /* UIButton+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8487CF962C1B24C600F4C8AD /* UIButton+Extensions.swift */; };
 		84F6B3352C19CBDE0008E4A4 /* CompassViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F6B3342C19CBDE0008E4A4 /* CompassViewController.swift */; };
 		84F6B3382C19EABE0008E4A4 /* GPSIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F6B3372C19EABE0008E4A4 /* GPSIndicatorView.swift */; };
 /* End PBXBuildFile section */
@@ -24,6 +29,11 @@
 		842489622C173BC40060FE60 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		842489652C173BC40060FE60 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		842489672C173BC40060FE60 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8487CF8C2C1AFD6300F4C8AD /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
+		8487CF8E2C1AFDC200F4C8AD /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		8487CF922C1B22AF00F4C8AD /* UIImage+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Extensions.swift"; sourceTree = "<group>"; };
+		8487CF942C1B249800F4C8AD /* Array+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extensions.swift"; sourceTree = "<group>"; };
+		8487CF962C1B24C600F4C8AD /* UIButton+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Extensions.swift"; sourceTree = "<group>"; };
 		84F6B3342C19CBDE0008E4A4 /* CompassViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompassViewController.swift; sourceTree = "<group>"; };
 		84F6B3372C19EABE0008E4A4 /* GPSIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPSIndicatorView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -62,6 +72,8 @@
 				8424895B2C173BC30060FE60 /* SceneDelegate.swift */,
 				8424895D2C173BC30060FE60 /* MapViewController.swift */,
 				84F6B3342C19CBDE0008E4A4 /* CompassViewController.swift */,
+				8487CF8C2C1AFD6300F4C8AD /* ShareViewController.swift */,
+				8487CF8E2C1AFDC200F4C8AD /* SettingsViewController.swift */,
 				84F6B3362C19EAA70008E4A4 /* View */,
 				842489622C173BC40060FE60 /* Assets.xcassets */,
 				842489642C173BC40060FE60 /* LaunchScreen.storyboard */,
@@ -74,6 +86,9 @@
 			isa = PBXGroup;
 			children = (
 				84F6B3372C19EABE0008E4A4 /* GPSIndicatorView.swift */,
+				8487CF922C1B22AF00F4C8AD /* UIImage+Extensions.swift */,
+				8487CF962C1B24C600F4C8AD /* UIButton+Extensions.swift */,
+				8487CF942C1B249800F4C8AD /* Array+Extensions.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -169,11 +184,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8487CF8D2C1AFD6300F4C8AD /* ShareViewController.swift in Sources */,
+				8487CF952C1B249900F4C8AD /* Array+Extensions.swift in Sources */,
 				8424895E2C173BC30060FE60 /* MapViewController.swift in Sources */,
+				8487CF972C1B24C600F4C8AD /* UIButton+Extensions.swift in Sources */,
+				8487CF8F2C1AFDC200F4C8AD /* SettingsViewController.swift in Sources */,
 				8424895A2C173BC30060FE60 /* AppDelegate.swift in Sources */,
 				84F6B3382C19EABE0008E4A4 /* GPSIndicatorView.swift in Sources */,
 				8424895C2C173BC30060FE60 /* SceneDelegate.swift in Sources */,
 				84F6B3352C19CBDE0008E4A4 /* CompassViewController.swift in Sources */,
+				8487CF932C1B22AF00F4C8AD /* UIImage+Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
