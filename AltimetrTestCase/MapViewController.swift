@@ -279,7 +279,6 @@ extension MapViewController: CLLocationManagerDelegate {
         dataViewLeft.updateAltitude(altitude)
         dataViewLeft.updateSpeed(speed)
         dataViewLeft.updatePressure(pressure)
-        dataViewRight.updateCoordinates(coordinates)
         dataViewRight.updateAltitude(altitude)
         dataViewRight.updateSpeed(speed)
     }
