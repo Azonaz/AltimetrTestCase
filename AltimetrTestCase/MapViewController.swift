@@ -53,12 +53,49 @@ class MapViewController: UIViewController {
         return button
     }()
 
+    private lazy var dataViewLeft: DataView = {
+        let view = DataView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
+    private lazy var dataViewRight: DataView = {
+        let view = DataView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
+    private lazy var dataStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [dataViewLeft, dataViewRight])
+        stackView.axis = .horizontal
+        stackView.spacing = 16
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+
+    private lazy var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.showsHorizontalScrollIndicator = false
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        return scrollView
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        updateScrollViewContentSize()
+    }
+
+    private func updateScrollViewContentSize() {
+        let contentWidth = dataStackView.frame.width + 40
+        scrollView.contentSize = CGSize(width: contentWidth, height: scrollView.frame.height)
     }
 
     private func updateLocationButtonAppearance() {
@@ -121,10 +158,11 @@ extension MapViewController {
         ]
         navigationController?.isNavigationBarHidden = true
         [mapView, compassButton, gpsIndicatorView, mapTypeButton, locationButton,
-         shareButton, settingsButton, appButton].forEach {
+         shareButton, settingsButton, appButton, scrollView].forEach {
             view.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
+        scrollView.addSubview(dataStackView)
         NSLayoutConstraint.activate([
             mapView.topAnchor.constraint(equalTo: view.topAnchor),
             mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -145,7 +183,19 @@ extension MapViewController {
             settingsButton.bottomAnchor.constraint(equalTo: locationButton.topAnchor, constant: -40),
             settingsButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
             appButton.topAnchor.constraint(equalTo: gpsIndicatorView.bottomAnchor, constant: 40),
-            appButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20)
+            appButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -70),
+            scrollView.heightAnchor.constraint(equalToConstant: 130),
+            dataStackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            dataStackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            dataStackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 20),
+            dataStackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -20),
+            dataViewLeft.widthAnchor.constraint(equalToConstant: 340),
+            dataViewLeft.heightAnchor.constraint(equalToConstant: 130),
+            dataViewRight.widthAnchor.constraint(equalToConstant: 340),
+            dataViewRight.heightAnchor.constraint(equalToConstant: 130)
         ])
         [compassButton, mapTypeButton, locationButton, shareButton, settingsButton, appButton].setButtonSizes(50)
     }

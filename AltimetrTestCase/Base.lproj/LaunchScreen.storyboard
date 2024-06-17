@@ -4,6 +4,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -36,7 +37,7 @@
                             </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <color key="backgroundColor" red="0.2285117945" green="0.3461228925" blue="0.85748106059999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" name="blueUniversal"/>
                         <constraints>
                             <constraint firstItem="1un-Oo-Uhw" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="Lrk-MR-ByH"/>
                             <constraint firstItem="1un-Oo-Uhw" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="VHF-1N-DMe"/>
@@ -50,5 +51,8 @@
     </scenes>
     <resources>
         <image name="launchLogo" width="512" height="512"/>
+        <namedColor name="blueUniversal">
+            <color red="0.22745098039215686" green="0.34509803921568627" blue="0.85882352941176465" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
     </resources>
 </document>
