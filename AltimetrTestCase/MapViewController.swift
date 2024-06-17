@@ -1,9 +1,12 @@
 import UIKit
 import MapKit
 import CoreLocation
+import CoreMotion
 
 class MapViewController: UIViewController {
     private let locationManager = CLLocationManager()
+    private let geocoder = CLGeocoder()
+    private let altimeter = CMAltimeter()
     private var isLocationUpdating = true
 
     private lazy var mapView: MKMapView = {
@@ -86,6 +89,7 @@ class MapViewController: UIViewController {
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
+        startAltimeterUpdates()
     }
 
     override func viewDidLayoutSubviews() {
@@ -100,6 +104,16 @@ class MapViewController: UIViewController {
 
     private func updateLocationButtonAppearance() {
         locationButton.backgroundColor = isLocationUpdating ? .labelBack : .black
+    }
+
+    private func startAltimeterUpdates() {
+        guard CMAltimeter.isRelativeAltitudeAvailable() else { return }
+        altimeter.startRelativeAltitudeUpdates(to: OperationQueue.main) { [weak self] data, error in
+            guard let data = data, error == nil else { return }
+            let altitude = data.relativeAltitude.doubleValue
+            self?.dataViewLeft.updateAltitude(altitude)
+            self?.dataViewRight.updateAltitude(altitude)
+        }
     }
 
     @objc
@@ -214,6 +228,9 @@ extension MapViewController {
 extension MapViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         showGPSSignal(locations)
+        guard let location = locations.last else { return }
+                updateLocationData(location)
+                geocodeLocation(location)
     }
 
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
@@ -250,4 +267,30 @@ extension MapViewController: CLLocationManagerDelegate {
             return .none
         }
     }
+
+    private func updateLocationData(_ location: CLLocation) {
+            let coordinates = location.coordinate
+            let altitude = location.altitude
+            let speed = location.speed
+
+            dataViewLeft.updateCoordinates(coordinates)
+            dataViewLeft.updateAltitude(altitude)
+            dataViewLeft.updateSpeed(speed)
+
+            dataViewRight.updateCoordinates(coordinates)
+            dataViewRight.updateAltitude(altitude)
+            dataViewRight.updateSpeed(speed)
+        }
+
+        private func geocodeLocation(_ location: CLLocation) {
+            geocoder.reverseGeocodeLocation(location) { [weak self] placemarks, error in
+                guard let placemark = placemarks?.first, error == nil else { return }
+                let address = [placemark.name, placemark.locality, placemark.administrativeArea, placemark.country]
+                    .compactMap { $0 }
+                    .joined(separator: ", ")
+
+                self?.dataViewLeft.updateAddress(address)
+                self?.dataViewRight.updateAddress(address)
+            }
+        }
 }
