@@ -111,8 +111,10 @@ class MapViewController: UIViewController {
         altimeter.startRelativeAltitudeUpdates(to: OperationQueue.main) { [weak self] data, error in
             guard let data = data, error == nil else { return }
             let altitude = data.relativeAltitude.doubleValue
+            let pressure = data.pressure.doubleValue
             self?.dataViewLeft.updateAltitude(altitude)
             self?.dataViewRight.updateAltitude(altitude)
+            self?.dataViewLeft.updatePressure(pressure)
         }
     }
 
@@ -229,8 +231,8 @@ extension MapViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         showGPSSignal(locations)
         guard let location = locations.last else { return }
-                updateLocationData(location)
-                geocodeLocation(location)
+        updateLocationData(location)
+        geocodeLocation(location)
     }
 
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
@@ -269,28 +271,26 @@ extension MapViewController: CLLocationManagerDelegate {
     }
 
     private func updateLocationData(_ location: CLLocation) {
-            let coordinates = location.coordinate
-            let altitude = location.altitude
-            let speed = location.speed
+        let coordinates = location.coordinate
+        let altitude = location.altitude
+        let speed = location.speed
+        let pressure = 0.0
+        dataViewLeft.updateCoordinates(coordinates)
+        dataViewLeft.updateAltitude(altitude)
+        dataViewLeft.updateSpeed(speed)
+        dataViewLeft.updatePressure(pressure)
+        dataViewRight.updateCoordinates(coordinates)
+        dataViewRight.updateAltitude(altitude)
+        dataViewRight.updateSpeed(speed)
+    }
 
-            dataViewLeft.updateCoordinates(coordinates)
-            dataViewLeft.updateAltitude(altitude)
-            dataViewLeft.updateSpeed(speed)
-
-            dataViewRight.updateCoordinates(coordinates)
-            dataViewRight.updateAltitude(altitude)
-            dataViewRight.updateSpeed(speed)
+    private func geocodeLocation(_ location: CLLocation) {
+        geocoder.reverseGeocodeLocation(location) { [weak self] placemarks, error in
+            guard let placemark = placemarks?.first, error == nil else { return }
+            let address = [placemark.name, placemark.locality, placemark.administrativeArea, placemark.country]
+                .compactMap { $0 }
+                .joined(separator: ", ")
+            self?.dataViewRight.updateAddress(address)
         }
-
-        private func geocodeLocation(_ location: CLLocation) {
-            geocoder.reverseGeocodeLocation(location) { [weak self] placemarks, error in
-                guard let placemark = placemarks?.first, error == nil else { return }
-                let address = [placemark.name, placemark.locality, placemark.administrativeArea, placemark.country]
-                    .compactMap { $0 }
-                    .joined(separator: ", ")
-
-                self?.dataViewLeft.updateAddress(address)
-                self?.dataViewRight.updateAddress(address)
-            }
-        }
+    }
 }

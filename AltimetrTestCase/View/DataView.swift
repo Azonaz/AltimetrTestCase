@@ -48,7 +48,7 @@ final class DataView: UIView {
         label.text = "Barometer"
         label.textAlignment = .left
         label.textColor = .blueUniversal
-        label.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
+        label.font = UIFont.systemFont(ofSize: 15, weight: .regular)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -67,7 +67,7 @@ final class DataView: UIView {
         label.text = "Coordinates"
         label.textAlignment = .left
         label.textColor = .blueUniversal
-        label.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
+        label.font = UIFont.systemFont(ofSize: 15, weight: .regular)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -156,12 +156,21 @@ final class DataView: UIView {
     }
 
     func updateAddress(_ address: String) {
-        middleLabel2.text = "Address: \(address)"
+        middleLabel1.text = "Address"
+        middleLabel2.numberOfLines = 0
+        middleLabel2.text = "\(address)"
+        middleLabel3.text = ""
+        middleLabel4.text = ""
     }
 
     func updateAltitude(_ altitude: CLLocationDistance) {
         let roundedAltitude = String(format: "%.2f", altitude)
         leftLabel.text = "\(roundedAltitude) \nm"
+    }
+
+    func updatePressure(_ pressure: Double) {
+        let formattedPressure = String(format: "%.2f hPa", pressure)
+        middleLabel2.text = formattedPressure
     }
 
     func updateSpeed(_ speed: CLLocationSpeed) {
